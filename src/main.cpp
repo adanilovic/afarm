@@ -1,48 +1,49 @@
 #include <stdio.h>
-
 #include <SDL.h>
- 
-class CApp {
- 
-    public:
- 
-        CApp();
- 
-        int OnExecute();
- 
-};
-
-CApp::CApp() {
-}
- 
-int CApp::OnExecute() {
-    return 0;
-}
+#include "SDL_image.h"
  
 int main(int argc, char* argv[]) {
-    CApp theApp;
 
-    SDL_Window *window;
+    SDL_Window * gwin = NULL;
+    SDL_Renderer *gren = NULL;
 
-    SDL_Init(SDL_INIT_VIDEO);
+    int ret = SDL_Init(SDL_INIT_EVERYTHING);
 
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "An SDL2 window",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
-    );
+    if(!ret) {
+        //success
 
-    SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+        (void) IMG_Init(IMG_INIT_PNG);
 
-    // Close and destroy the window
-    SDL_DestroyWindow(window);
+        //Create an application window with the following settings:
+        gwin = SDL_CreateWindow(
+            "An SDL2 window",                  // window title
+            SDL_WINDOWPOS_CENTERED,            // initial x position
+            SDL_WINDOWPOS_CENTERED,            // initial y position
+            640,                               // width, in pixels
+            480,                               // height, in pixels
+            SDL_WINDOW_SHOWN                   // flags - see below
+        );
 
-    // Clean up
-    SDL_Quit();
- 
-    return theApp.OnExecute();
+        if(gwin != NULL) {
+            gren = SDL_CreateRenderer(gwin, -1, 0);
+        }
+    }
+    else {
+        fprintf(stderr, "SDL_Init(SDL_INIT_EVERYTHING): %s\n", SDL_GetError());
+        return -1;
+    }
+
+    if(gren != NULL) {
+        SDL_SetRenderDrawColor(gren, 0, 0, 0, 255);
+
+        SDL_RenderClear(gren);
+
+        SDL_RenderPresent(gren);
+
+        SDL_Delay(5000);
+
+        SDL_Quit();
+    }
+
+    return 0;
 }

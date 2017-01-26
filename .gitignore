@@ -7,6 +7,9 @@
 # Build Directory
 build/
 
+# resource Directory
+res/
+
 # Precompiled Headers
 *.gch
 *.pch
